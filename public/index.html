@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LucaDCZ - Frontend Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7C3AED',
+                        secondary: '#EC4899',
+                    },
+                    animation: {
+                        'float': 'float 20s ease-in-out infinite',
+                        'wave': 'wave 2s ease-in-out infinite',
+                        'shimmer': 'shimmer 3s infinite',
+                        'rotate': 'rotate 20s linear infinite',
+                        'fadeIn': 'fadeIn 0.5s ease forwards',
+                        'slideInLeft': 'slideInLeft 0.8s ease',
+                        'slideInRight': 'slideInRight 0.8s ease',
+                        'fadeInUp': 'fadeInUp 0.6s ease',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translate(0, 0) rotate(0deg)' },
+                            '25%': { transform: 'translate(100px, -100px) rotate(90deg)' },
+                            '50%': { transform: 'translate(-50px, 100px) rotate(180deg)' },
+                            '75%': { transform: 'translate(-100px, -50px) rotate(270deg)' },
+                        },
+                        wave: {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(20deg)' },
+                            '75%': { transform: 'rotate(-20deg)' },
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%) translateY(-100%) rotate(45deg)' },
+                            '100%': { transform: 'translateX(100%) translateY(100%) rotate(45deg)' },
+                        },
+                        rotate: {
+                            'to': { transform: 'rotate(360deg)' },
+                        },
+                        fadeIn: {
+                            'to': { opacity: '1' },
+                        },
+                        slideInLeft: {
+                            'from': { transform: 'translateX(-50px)', opacity: '0' },
+                            'to': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideInRight: {
+                            'from': { transform: 'translateX(50px)', opacity: '0' },
+                            'to': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        fadeInUp: {
+                            'from': { transform: 'translateY(30px)', opacity: '0' },
+                            'to': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .page {
+            display: none;
+            opacity: 0;
+        }
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #7C3AED;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-ripple::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .btn-ripple:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        .project-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-900 bg-white overflow-x-hidden">
+    <!-- Floating Background Shapes -->
+    <div class="fixed w-72 h-72 bg-gradient-to-r from-primary to-secondary rounded-full opacity-10 -top-20 -left-36 animate-float pointer-events-none -z-10"></div>
+    <div class="fixed w-48 h-48 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-10 -bottom-20 -right-24 animate-float pointer-events-none -z-10" style="animation-delay: 5s;"></div>
+    <div class="fixed w-36 h-36 bg-gradient-to-r from-pink-400 to-red-400 rounded-full opacity-10 top-1/2 right-32 animate-float pointer-events-none -z-10" style="animation-delay: 10s;"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md z-50 transition-all duration-300 py-5 px-12">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-xl font-bold text-slate-900 hover:-translate-y-0.5 transition-transform">Ibnuuu.</a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-10" id="navLinks">
+                <a href="#" class="nav-link relative text-slate-500 hover:text-slate-900 transition-colors active text-primary" data-page="home">Home</a>
+                <a href="#" class="nav-link relative text-slate-500 hover:text-slate-900 transition-colors" data-page="projects">Projects</a>
+                <a href="#" class="nav-link relative text-slate-500 hover:text-slate-900 transition-colors" data-page="about">About</a>
+                <a href="#" class="nav-link relative text-slate-500 hover:text-slate-900 transition-colors" data-page="contact">Contact</a>
+                <a href="#" class="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-white hover:bg-primary hover:scale-110 transition-all">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="md:hidden flex flex-col gap-1 cursor-pointer" id="mobileMenu">
+                <span class="w-6 h-0.5 bg-slate-900 transition-all duration-300"></span>
+                <span class="w-6 h-0.5 bg-slate-900 transition-all duration-300"></span>
+                <span class="w-6 h-0.5 bg-slate-900 transition-all duration-300"></span>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="md:hidden fixed top-16 -left-full w-full h-[calc(100vh-4rem)] bg-white flex flex-col items-center justify-center gap-8 transition-all duration-300" id="mobileNavLinks">
+            <a href="#" class="nav-link relative text-2xl text-slate-500 hover:text-slate-900 transition-colors active text-primary" data-page="home">Home</a>
+            <a href="#" class="nav-link relative text-2xl text-slate-500 hover:text-slate-900 transition-colors" data-page="projects">Projects</a>
+            <a href="#" class="nav-link relative text-2xl text-slate-500 hover:text-slate-900 transition-colors" data-page="about">About</a>
+            <a href="#" class="nav-link relative text-2xl text-slate-500 hover:text-slate-900 transition-colors" data-page="contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div class="page active min-h-screen pt-10" id="home">
+        <section class="px-6 lg:px-12 max-w-7xl mx-auto min-h-[calc(100vh-5rem)] grid lg:grid-cols-2 gap-20 items-center py-20">
+            <div class="animate-slideInLeft text-center lg:text-left">
+                <div class="text-slate-500 text-lg mb-5 flex items-center justify-center lg:justify-start gap-2">
+                    Hey, I'm Ibnuu <span class="inline-block animate-wave">👋</span>
+                </div>
+                <h1 class="text-6xl lg:text-8xl font-black leading-tight mb-8">
+                    <span class="text-primary">Backend</span><br>
+                    Developer
+                </h1>
+                <p class="text-slate-500 text-xl leading-relaxed mb-10 max-w-lg mx-auto lg:mx-0">
+                    I'm a frontend developer based in Italy, I'll help you build beautiful websites your users will love.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <button onclick="navigateToPage('contact')" class="btn-ripple px-8 py-3.5 bg-primary text-white rounded-full font-semibold hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30 transition-all">
+                        Get In Touch
+                    </button>
+                    <button onclick="navigateToPage('projects')" class="btn-ripple px-8 py-3.5 bg-white text-slate-900 border-2 border-slate-900 rounded-full font-semibold hover:bg-slate-900 hover:text-white hover:-translate-y-1 transition-all">
+                        Browse Projects
+                    </button>
+                </div>
+            </div>
+            <div class="animate-slideInRight">
+                <div class="relative w-full max-w-md mx-auto aspect-square">
+                     <div class="relative w-full max-w-md mx-auto aspect-square">
+    <!-- Lingkaran gradient dengan animasi rotate -->
+    <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full p-1 animate-rotate">
+      <!-- Foto di dalam lingkaran -->
+      <img 
+        src="./Roblox.jpeg" 
+        alt="ffd" 
+        class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg"
+      >
+    </div>
+  </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Projects Page -->
+    <div class="page min-h-screen pt-20" id="projects">
+        <section class="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+            <h2 class="text-6xl lg:text-7xl font-black mb-16">
+                Projects<span class="text-primary">.</span>
+            </h2>
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="group bg-slate-50 rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 animate-fadeInUp">
+                    <div class="relative h-72 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+                        <span class="relative z-10">Dashboard Analytics</span>
+                        <div class="project-image"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-3">Dashboard Analytics</h3>
+                        <p class="text-slate-500 leading-relaxed mb-5">
+                            A comprehensive analytics dashboard with real-time data visualization and reporting features.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">React</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">TypeScript</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">D3.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-slate-50 rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 animate-fadeInUp" style="animation-delay: 0.1s;">
+                    <div class="relative h-72 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+                        <span class="relative z-10">E-Commerce Platform</span>
+                        <div class="project-image"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-3">E-Commerce Platform</h3>
+                        <p class="text-slate-500 leading-relaxed mb-5">
+                            Modern shopping experience with advanced filtering, cart management, and payment integration.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Next.js</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Stripe</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Tailwind</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-slate-50 rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 animate-fadeInUp" style="animation-delay: 0.2s;">
+                    <div class="relative h-72 bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+                        <span class="relative z-10">Social Media App</span>
+                        <div class="project-image"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-3">Social Media App</h3>
+                        <p class="text-slate-500 leading-relaxed mb-5">
+                            Full-featured social platform with real-time messaging, posts, and user interactions.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Vue.js</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Firebase</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">WebSocket</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group bg-slate-50 rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 animate-fadeInUp" style="animation-delay: 0.3s;">
+                    <div class="relative h-72 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+                        <span class="relative z-10">Task Management</span>
+                        <div class="project-image"></div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-3">Task Management System</h3>
+                        <p class="text-slate-500 leading-relaxed mb-5">
+                            Collaborative project management tool with kanban boards and team features.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">React</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Redux</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-sm text-slate-500">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- About Page -->
+    <div class="page min-h-screen pt-20" id="about">
+        <section class="px-6 lg:px-12 py-20 max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-5xl font-black mb-8">About Me</h2>
+                    <p class="text-slate-500 text-lg leading-relaxed mb-5">
+                        I'm a passionate frontend developer with over 5 years of experience creating digital experiences that delight users and drive business results.
+                    </p>
+                    <p class="text-slate-500 text-lg leading-relaxed mb-5">
+                        My journey in web development started with a curiosity about how websites work, and has evolved into a career focused on crafting beautiful, performant, and accessible web applications.
+                    </p>
+                    <p class="text-slate-500 text-lg leading-relaxed">
+                        I specialize in modern JavaScript frameworks, responsive design, and creating intuitive user interfaces that make complex tasks simple.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-8">Skills & Technologies</h3>
+                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">⚛️</div>
+                            <div class="text-sm font-semibold">Laravel</div>
+                        </div>
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">🎨</div>
+                            <div class="text-sm font-semibold">Tailwind</div>
+                        </div>
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">📱</div>
+                            <div class="text-sm font-semibold">Responsive</div>
+                        </div>
+                      
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">📊</div>
+                            <div class="text-sm font-semibold">TypeScript</div>
+                        </div>
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">🎯</div>
+                            <div class="text-sm font-semibold">Vue.js</div>
+                        </div>
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">🛠️</div>
+                            <div class="text-sm font-semibold">Webpack</div>
+                        </div>
+                        <div class="group p-5 bg-slate-50 rounded-2xl text-center hover:-translate-y-1 hover:bg-primary hover:text-white transition-all cursor-pointer">
+                            <div class="text-3xl mb-2">🔥</div>
+                            <div class="text-sm font-semibold">Firebase</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Contact Page -->
+    <div class="page min-h-screen pt-20" id="contact">
+        <section class="px-6 lg:px-12 py-20 max-w-3xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl lg:text-6xl font-black mb-6">
+                    Get In Touch<span class="text-primary">.</span>
+                </h2>
+                <p class="text-xl text-slate-500">
+                    Have a project in mind? Let's work together to create something amazing.
+                </p>
+            </div>
+            
+            <form class="space-y-6" onsubmit="handleSubmit(event)">
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-slate-900 mb-2">Name</label>
+                    <input type="text" id="name" name="name" required 
+                           class="w-full px-5 py-3 border-2 border-slate-100 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:-translate-y-0.5 bg-white">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-semibold text-slate-900 mb-2">Email</label>
+                    <input type="email" id="email" name="email" required 
+                           class="w-full px-5 py-3 border-2 border-slate-100 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:-translate-y-0.5 bg-white">
+                </div>
+                <div>
+                    <label for="subject" class="block text-sm font-semibold text-slate-900 mb-2">Subject</label>
+                    <input type="text" id="subject" name="subject" required 
+                           class="w-full px-5 py-3 border-2 border-slate-100 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:-translate-y-0.5 bg-white">
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-semibold text-slate-900 mb-2">Message</label>
+                    <textarea id="message" name="message" rows="6" required 
+                              class="w-full px-5 py-3 border-2 border-slate-100 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:-translate-y-0.5 bg-white resize-y"></textarea>
+                </div>
+                <button type="submit" class="btn-ripple w-full px-8 py-4 bg-primary text-white rounded-xl font-semibold hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30 transition-all">
+                    Send Message
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Navigation functionality
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileNavLinks = document.getElementById('mobileNavLinks');
+        const navbar = document.getElementById('navbar');
+
+        // Page navigation
+        function navigateToPage(pageName) {
+            // Hide all pages
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const selectedPage = document.getElementById(pageName);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+            }
+            
+            // Update active nav link
+            navLinks.forEach(link => {
+                link.classList.remove('active', 'text-primary');
+                link.classList.add('text-slate-500');
+                if (link.dataset.page === pageName) {
+                    link.classList.add('active', 'text-primary');
+                    link.classList.remove('text-slate-500');
+                }
+            });
+
+            // Close mobile menu
+            mobileNavLinks.style.left = '-100%';
+            mobileMenu.classList.remove('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add click listeners to nav links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageName = link.dataset.page;
+                navigateToPage(pageName);
+            });
+        });
+
+        // Mobile menu toggle
+        mobileMenu.addEventListener('click', () => {
+            const isActive = mobileMenu.classList.contains('active');
+            
+            if (isActive) {
+                mobileMenu.classList.remove('active');
+                mobileNavLinks.style.left = '-100%';
+                // Reset hamburger icon
+                mobileMenu.children[0].style.transform = 'none';
+                mobileMenu.children[1].style.opacity = '1';
+                mobileMenu.children[2].style.transform = 'none';
+            } else {
+                mobileMenu.classList.add('active');
+                mobileNavLinks.style.left = '0';
+                // Animate to X icon
+                mobileMenu.children[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                mobileMenu.children[1].style.opacity = '0';
+                mobileMenu.children[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+            }
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-3', 'shadow-lg');
+                navbar.classList.remove('py-5');
+            } else {
+                navbar.classList.remove('py-3', 'shadow-lg');
+                navbar.classList.add('py-5');
+            }
+        });
+
+        // Form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Thank you for your message! I will get back to you soon.');
+            event.target.reset();
+        }
+
+        // Initialize animations for project cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-8');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.group').forEach(card => {
+                card.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700');
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
